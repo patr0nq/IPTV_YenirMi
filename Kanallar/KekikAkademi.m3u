@@ -201,7 +201,7 @@ https://zindikurmanci.zaroktv.com.tr/hls/stream.m3u8
 
 
 # * » Spor « * #
-#EXTINF:-1 tvg-name="Sky Sports F1" tvg-language="English" tvg-country="USA" tvg-id="Sky Sports F1" tvg-logo="https://images.contentstack.io/v3/assets/bltdc2476c7b6b194dd/bltf067295452c6f475/5f5f463021ecf947895d945a/Sky_Sports_Logo_September_2020.jpg" group-title="Spor",Sky Sports F1
+#EXTINF:-1 tvg-name="Sky Sports F1" tvg-language="English" tvg-country="USA" tvg-id="Sky Sports F1" tvg-logo="https://static.skyassets.com/contentstack/assets/blt143e20b03d72047e/blta95035dd51049d82/65bbb5730b2014cb5b412a00/SkySports_1x1.png" group-title="Spor",Sky Sports F1
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5)
 #EXTVLCOPT:http-referrer=https://trgoals1240.xyz/
 https://b0.b4c8d3e9f1a2b7c5d92.cfd/yayinf1.m3u8
