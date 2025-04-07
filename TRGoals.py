@@ -28,7 +28,7 @@ class TRGoals:
         
         # Bilinen TRGoals domain'leri
         self.bilinen_domainler = [
-            "https://trgoals1254.xyz",
+            "https://trgoals1257.xyz",
             "https://trgoalsgiris.xyz"
         ]
 
@@ -43,10 +43,10 @@ class TRGoals:
             else:
                 konsol.log("[red][!] M3U dosyasında 'trgoals' içeren referer domain bulunamadı!")
                 # Örnek domain dönelim ki program çalışmaya devam edebilsin
-                return "https://trgoals1254.xyz"
+                return "https://trgoals1257.xyz"
         except Exception as e:
             konsol.log(f"[red][!] Dosya okuma hatası: {str(e)}")
-            return "https://trgoals1254.xyz"
+            return "https://trgoals1257.xyz"
 
     def domain_check(self, domain):
         """Verilen domain'e istek atarak çalışıp çalışmadığını kontrol eder"""
@@ -123,7 +123,7 @@ class TRGoals:
                 
         # 4. Hiçbiri çalışmazsa eldeki domain'i dön
         konsol.log("[yellow][~] Aktif domain bulunamadı, varsayılan domain kullanılacak")
-        return "https://trgoals1254.xyz"
+        return "https://trgoals1257.xyz"
 
     def extract_yayin_url(self, domain):
         """Verilen domain'den yayın URL'sini ayıklar"""
