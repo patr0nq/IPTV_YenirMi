@@ -28,8 +28,24 @@ class TRGoals:
         
         # Bilinen TRGoals domain'leri
         self.bilinen_domainler = [
-            "https://trgoals1257.xyz",
+            "https://trgoals1256.xyz",
             "https://trgoalsgiris.xyz"
+        ]
+        
+        # Hata içerik kontrolü için anahtar kelimeler
+        self.hata_kelimeleri = [
+            "bu sayfaya ulaşılamıyor",
+            "page not found",
+            "404",
+            "site bulunamadı",
+            "cannot be reached",
+            "the site can't be reached",
+            "bağlantı zaman aşımına uğradı",
+            "connection timed out",
+            "dns_probe_finished",
+            "err_connection",
+            "page isn't working",
+            "sayfa çalışmıyor"
         ]
 
     def referer_domainini_al(self):
@@ -43,21 +59,57 @@ class TRGoals:
             else:
                 konsol.log("[red][!] M3U dosyasında 'trgoals' içeren referer domain bulunamadı!")
                 # Örnek domain dönelim ki program çalışmaya devam edebilsin
-                return "https://trgoals1257.xyz"
+                return "https://trgoals1256.xyz"
         except Exception as e:
             konsol.log(f"[red][!] Dosya okuma hatası: {str(e)}")
-            return "https://trgoals1257.xyz"
+            return "https://trgoals1256.xyz"
 
     def domain_check(self, domain):
         """Verilen domain'e istek atarak çalışıp çalışmadığını kontrol eder"""
         try:
-            response = self.httpx.get(domain, timeout=10.0)
-            if response.status_code == 200:
-                konsol.log(f"[green][+] Domain aktif: {domain}")
-                return True
-            else:
+            # Rastgele bir gecikme ekleyelim (bot tespitini engellemek için)
+            time.sleep(random.uniform(1.0, 3.0))
+            
+            konsol.log(f"[yellow][~] Domain kontrol ediliyor: {domain}")
+            response = self.httpx.get(domain, timeout=15.0)
+            
+            # 1. HTTP yanıt kodu kontrolü
+            if response.status_code != 200:
                 konsol.log(f"[yellow][~] Domain yanıt verdi ama durum kodu {response.status_code}: {domain}")
                 return False
+            
+            # 2. İçerik uzunluğu kontrolü (çok kısa içerikler genellikle hata sayfasıdır)
+            if len(response.text) < 500:
+                konsol.log(f"[yellow][~] Domain yanıt verdi ama içerik çok kısa: {domain}")
+                return False
+            
+            # 3. Hata mesajları içerik kontrolü
+            lower_text = response.text.lower()
+            for hata in self.hata_kelimeleri:
+                if hata.lower() in lower_text:
+                    konsol.log(f"[yellow][~] Domain yanıt verdi ama hata içeriği barındırıyor ('{hata}'): {domain}")
+                    return False
+            
+            # 4. Sayfada temel HTML yapısı var mı kontrol et
+            if not re.search(r'<html.*?>.*?<body.*?>.*?</body>.*?</html>', response.text, re.DOTALL | re.IGNORECASE):
+                konsol.log(f"[yellow][~] Domain yanıt verdi ama geçerli HTML içeriği yok: {domain}")
+                return False
+                
+            # 5. Channel.html sayfası var mı kontrol et (domain çalışsa bile TRGoals sitesi olmayabilir)
+            try:
+                kanal_url = f"{domain}/channel.html?id=yayin1"
+                kanal_response = self.httpx.get(kanal_url, timeout=10.0)
+                if kanal_response.status_code != 200 or len(kanal_response.text) < 500:
+                    konsol.log(f"[yellow][~] Domain aktif ancak channel.html sayfası bulunamadı: {domain}")
+                    return False
+            except Exception:
+                # Channel.html kontrolü başarısız olursa yine de ana domain çalışıyor olabilir
+                pass
+                
+            # Tüm kontrollerden geçtiğine göre domain çalışıyor
+            konsol.log(f"[green][+] Domain aktif ve çalışıyor: {domain}")
+            return True
+            
         except Exception as e:
             konsol.log(f"[red][!] Domain kontrolü başarısız: {domain} - {str(e)}")
             return False
@@ -121,9 +173,21 @@ class TRGoals:
             if tahmin_domain not in self.bilinen_domainler and self.domain_check(tahmin_domain):
                 return tahmin_domain
                 
-        # 4. Hiçbiri çalışmazsa eldeki domain'i dön
-        konsol.log("[yellow][~] Aktif domain bulunamadı, varsayılan domain kullanılacak")
-        return "https://trgoals1257.xyz"
+        # 4. Hiçbiri çalışmazsa güncel olabilecek bir domain döndür
+        konsol.log("[yellow][~] Aktif domain bulunamadı, son çare olarak en son bilinen domain deneniyor")
+        en_son_domain = "https://trgoals1256.xyz"  # Varsayılan
+        
+        # Eldeki domain'in numarasını al ve bir sonrakini dene
+        try:
+            eldeki_domain = self.referer_domainini_al()
+            if rakam_match := re.search(r'trgoals(\d+)', eldeki_domain):
+                rakam = int(rakam_match.group(1)) + 1
+                en_son_domain = f"https://trgoals{rakam}.xyz"
+                konsol.log(f"[yellow][~] En son domain tahmini: {en_son_domain}")
+        except Exception:
+            pass
+            
+        return en_son_domain
 
     def extract_yayin_url(self, domain):
         """Verilen domain'den yayın URL'sini ayıklar"""
@@ -138,35 +202,53 @@ class TRGoals:
             })
             
             # Bazen bot koruması olabileceği için biraz bekleme ekleyin
-            time.sleep(2)
+            time.sleep(random.uniform(1.5, 3.0))
             
             response = self.httpx.get(kontrol_url, timeout=15.0)
+            
+            # Sayfa içeriğini Debug etmek için
+            konsol.log(f"[yellow][~] Sayfa içeriği (ilk 100 karakter): {response.text[:100]}...")
             
             # Base URL arama (standart yöntem)
             if yayin_ara := re.search(r'var\s+baseurl\s*=\s*["\']?(https?:\/\/[^"\']+)["\']?', response.text):
                 yayin_url = yayin_ara[1]
-                konsol.log(f"[green][+] Yayın URL bulundu: {yayin_url}")
+                konsol.log(f"[green][+] Yayın URL bulundu (baseurl): {yayin_url}")
                 return yayin_url
                 
             # İframe kaynak kontrolü (alternatif yöntem)
             secici = Selector(response.text)
             iframe_src = secici.xpath("//iframe/@src").get()
-            if iframe_src and "http" in iframe_src:
+            if iframe_src:
                 konsol.log(f"[green][+] Iframe kaynak URL bulundu: {iframe_src}")
+                
+                # İframe URL'si tam değilse domain ile birleştir
+                if not iframe_src.startswith("http"):
+                    iframe_src = f"{domain.rstrip('/')}/{iframe_src.lstrip('/')}"
+                    
                 # İframe kaynağı doğrudan stream URL'si olabilir veya içinde stream URL'si bulunabilir
                 if "m3u8" in iframe_src or "workers.dev" in iframe_src:
                     return iframe_src
                 else:
                     # İframe içindeki içeriği kontrol et
-                    iframe_response = self.httpx.get(iframe_src, timeout=10.0)
-                    if m3u8_ara := re.search(r'(https?:\/\/[^"\']+\.m3u8[^"\']*)', iframe_response.text):
-                        return m3u8_ara[1]
+                    try:
+                        iframe_response = self.httpx.get(iframe_src, timeout=10.0)
+                        if m3u8_ara := re.search(r'(https?:\/\/[^"\']+\.m3u8[^"\']*)', iframe_response.text):
+                            return m3u8_ara[1]
+                    except Exception as e:
+                        konsol.log(f"[red][!] İframe içerik kontrolü hatası: {str(e)}")
             
             # JavaScript içinde stream URL'si arama
-            if stream_ara := re.search(r'(https?:\/\/[^/]+\.(workers\.dev|shop|cfd|net)[^"\']*)', response.text):
-                yayin_url = stream_ara[1]
-                konsol.log(f"[green][+] JavaScript içinde stream URL bulundu: {yayin_url}")
-                return yayin_url
+            patterns = [
+                r'(https?:\/\/[^/]+\.(workers\.dev|shop|cfd|net)[^"\']*)',
+                r'(https?:\/\/[^"\']+\.m3u8[^"\']*)',
+                r'source:\s*["\']?(https?:\/\/[^"\']+)["\']?'
+            ]
+            
+            for pattern in patterns:
+                if stream_ara := re.search(pattern, response.text):
+                    yayin_url = stream_ara[1]
+                    konsol.log(f"[green][+] JavaScript içinde stream URL bulundu: {yayin_url}")
+                    return yayin_url
                 
             konsol.log("[red][!] Yayın URL'si bulunamadı!")
             return None
@@ -179,15 +261,33 @@ class TRGoals:
         """Aktif TRGoals domain'ini bulur"""
         try:
             # Önce eldeki domain'i kontrol et
+            konsol.log(f"[yellow][~] Eldeki domain kontrol ediliyor: {eldeki_domain}")
             if self.domain_check(eldeki_domain):
+                konsol.log(f"[green][+] Eldeki domain çalışıyor, aynı domain kullanılacak: {eldeki_domain}")
                 return eldeki_domain
                 
+            # Eldeki domain çalışmıyorsa açıkça belirt
+            konsol.log(f"[red][!] Eldeki domain çalışmıyor veya sayfaya ulaşılamıyor: {eldeki_domain}")
+            
             # Eldeki domain çalışmıyorsa yeni domain bul
-            return self.find_active_domain()
+            konsol.log("[yellow][~] Yeni domain aranıyor...")
+            yeni_domain = self.find_active_domain()
+            konsol.log(f"[green][+] Yeni domain bulundu: {yeni_domain}")
+            return yeni_domain
         except Exception as e:
             konsol.log(f"[red][!] Domain alma hatası: {str(e)}")
-            # Hata durumunda eldeki domain'i geri dön
-            return eldeki_domain
+            # Hata durumunda yeni bir domain tahmini yapalım
+            try:
+                rakam_match = re.search(r'trgoals(\d+)', eldeki_domain)
+                if rakam_match:
+                    rakam = int(rakam_match.group(1)) + 1
+                    yeni_domain = f"https://trgoals{rakam}.xyz"
+                    konsol.log(f"[yellow][~] Hata durumunda tahmin edilen domain: {yeni_domain}")
+                    return yeni_domain
+                else:
+                    return "https://trgoals1256.xyz"
+            except Exception:
+                return "https://trgoals1256.xyz"
 
     def m3u_guncelle(self):
         try:
@@ -201,7 +301,7 @@ class TRGoals:
                 m3u_icerik = dosya.read()
 
             # Eski yayın URL'sini bul
-            eski_yayin_url_match = re.search(r'https?:\/\/[^\/]+\.(workers\.dev|shop|cfd|net)\/?[^\s]*', m3u_icerik)
+            eski_yayin_url_match = re.search(r'https?:\/\/[^\/]+\.(workers\.dev|shop|cfd|net|m3u8)\/?[^\s]*', m3u_icerik)
             if not eski_yayin_url_match:
                 konsol.log("[red][!] M3U dosyasında eski yayın URL'si bulunamadı!")
                 eski_yayin_url = None
@@ -224,33 +324,42 @@ class TRGoals:
             # M3U içeriğini güncelle
             yeni_m3u_icerik = m3u_icerik
             
+            # İçerik değişikliği için sayaç tutalım
+            degisiklik_sayisi = 0
+            
             # Eski domain'i yeni domain ile değiştir
-            yeni_m3u_icerik = yeni_m3u_icerik.replace(eldeki_domain, yeni_domain)
+            if eldeki_domain != yeni_domain:
+                yeni_m3u_icerik = yeni_m3u_icerik.replace(eldeki_domain, yeni_domain)
+                degisiklik_sayisi += yeni_m3u_icerik.count(yeni_domain)
+                konsol.log(f"[green][+] Domain güncellemesi yapıldı: {eldeki_domain} -> {yeni_domain}")
             
             # Eski yayın URL'si varsa değiştir
-            if eski_yayin_url:
+            if eski_yayin_url and yayin_url != eski_yayin_url:
                 yeni_m3u_icerik = yeni_m3u_icerik.replace(eski_yayin_url, yayin_url)
+                degisiklik_sayisi += 1
+                konsol.log(f"[green][+] Yayın URL güncellemesi yapıldı")
             else:
                 # Eski yayın URL'si yoksa, her bir kanal için URL'yi ekle/güncelle
-                # Bu kısım M3U formatınıza göre değişebilir
-                konsol.log("[yellow][~] Eski yayın URL bulunamadı, manuel güncelleme yapılıyor")
-                
-                # M3U içeriğindeki her bir kanalı bulup URL'yi güncelle
                 kanal_satirlari = re.findall(r'(#EXTINF:.*?\n)(.*?)(\n|$)', m3u_icerik)
                 if kanal_satirlari:
                     for extinf, url, _ in kanal_satirlari:
                         if not url.startswith("http"):
-                            konsol.log(f"[yellow][~] Kanal URL'si güncelleniyor: {extinf.strip()}")
                             yeni_m3u_icerik = yeni_m3u_icerik.replace(
                                 f"{extinf}{url}", 
                                 f"{extinf}{yayin_url}"
                             )
-
+                            degisiklik_sayisi += 1
+                
+            # Değişiklik olmadıysa uyarı verelim
+            if degisiklik_sayisi == 0:
+                konsol.log("[yellow][~] M3U dosyasında herhangi bir değişiklik yapılmadı.")
+                
             # Dosyayı yeni içerikle güncelle
             with open(self.m3u_dosyasi, "w") as dosya:
                 dosya.write(yeni_m3u_icerik)
                 
             konsol.log(f"[green][+] M3U dosyası başarıyla güncellendi: {self.m3u_dosyasi}")
+            konsol.log(f"[green][+] Toplam {degisiklik_sayisi} değişiklik yapıldı")
             return True
             
         except Exception as e:
