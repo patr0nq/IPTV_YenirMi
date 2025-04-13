@@ -27,7 +27,12 @@ class TRGoals:
         return redirect_url
 
     def redirect_gec(self, redirect_url: str):
-        response = self.httpx.get(redirect_url, follow_redirects=True)
+        konsol.log(f"[cyan][~] redirect_gec çağrıldı: {redirect_url}")
+        try:
+            response = self.httpx.get(redirect_url, follow_redirects=True)
+        except Exception as e:
+            raise ValueError(f"Redirect sırasında hata oluştu: {e}")
+    
         domain = str(response.url).strip("/")
         if "error" in domain:
             raise ValueError("Redirect domain hatalı..")
