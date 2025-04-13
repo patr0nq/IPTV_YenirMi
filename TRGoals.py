@@ -21,10 +21,14 @@ class TRGoals:
             raise ValueError("M3U dosyasında 'trgoals' içeren referer domain bulunamadı!")
 
     def trgoals_domaini_al(self):
-        redirect_url = "https://bit.ly/m/taraftarium24w"
-        while "bit.ly" in redirect_url:
-            redirect_url = self.redirect_gec(redirect_url)
-        return redirect_url
+        try:
+            response = self.httpx.get("https://bit.ly/m/taraftarium24w", follow_redirects=True)
+            domain = str(response.url).strip("/")
+            if "bit.ly" in domain:
+                raise ValueError("Yönlendirme tamamlanamadı, hâlâ bit.ly'de.")
+            return domain
+        except Exception as e:
+            raise ValueError(f"trgoals_domaini_al hatası: {e}")
 
     def redirect_gec(self, redirect_url: str):
         konsol.log(f"[cyan][~] redirect_gec çağrıldı: {redirect_url}")
