@@ -22,8 +22,22 @@ class TRGoals:
 
     def trgoals_domaini_al(self):
         redirect_url = "https://bit.ly/m/taraftarium24w"
-        while "bit.ly" in redirect_url:
-            redirect_url = self.redirect_gec(redirect_url)
+        deneme = 0
+        while "bit.ly" in redirect_url and deneme < 5:
+            try:
+                redirect_url = self.redirect_gec(redirect_url)
+            except Exception as e:
+                konsol.log(f"[red][!] redirect_gec hata: {e}")
+                break
+            deneme += 1
+
+        if "bit.ly" in redirect_url or "error" in redirect_url:
+            konsol.log("[yellow][!] 5 denemeden sonra bit.ly çözülemedi, yedek linke geçiliyor...")
+            try:
+                redirect_url = self.redirect_gec("https://t.co/aOAO1eIsqE")
+            except Exception as e:
+                raise ValueError(f"Yedek linkten de domain alınamadı: {e}")
+
         return redirect_url
 
     def redirect_gec(self, redirect_url: str):
