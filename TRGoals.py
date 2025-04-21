@@ -46,11 +46,16 @@ class TRGoals:
             response = self.httpx.get(redirect_url, follow_redirects=True)
         except Exception as e:
             raise ValueError(f"Redirect sırasında hata oluştu: {e}")
-    
-        domain = str(response.url).strip("/")
-        if "error" in domain:
-            raise ValueError("Redirect domain hatalı..")
-        return domain
+
+        # Tüm yönlendirme zincirlerini al
+        tum_url_listesi = [str(r.url) for r in response.history] + [str(response.url)]
+
+        # İlk "trgoals" içeren linki bul
+        for url in tum_url_listesi[::-1]:  # sondan başlayarak kontrol et
+            if "trgoals" in url:
+                return url.strip("/")
+
+        raise ValueError("Redirect zincirinde 'trgoals' içeren bir link bulunamadı!")
 
     def yeni_domaini_al(self, eldeki_domain: str) -> str:
         def check_domain(domain: str) -> str:
