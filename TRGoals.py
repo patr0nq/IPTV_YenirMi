@@ -8,7 +8,7 @@ import re
 class TRGoals:
     def __init__(self, m3u_dosyasi):
         self.m3u_dosyasi = m3u_dosyasi
-        self.httpx       = Client(timeout=10)
+        self.httpx       = Client(timeout=10, verify=False)
 
     def referer_domainini_al(self):
         referer_deseni = r'#EXTVLCOPT:http-referrer=(https?://[^/]*trgoals[^/]*\.[^\s/]+)'
@@ -103,7 +103,7 @@ class TRGoals:
         konsol.log(f"[yellow][~] Eski Yayın URL : {eski_yayin_url}")
 
         # API çağrısı kaldırıldı, doğrudan istek yapılıyor
-        response = self.httpx.get(kontrol_url, follow_redirects=True)
+        response = self.httpx.get(kontrol_url, follow_redirects=True, verify=False)
 
         if not (yayin_ara := re.search(r'var baseurl = "(https?:\/\/[^"]+)"', response.text)):
             secici = Selector(response.text)
