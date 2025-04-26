@@ -103,7 +103,7 @@ class TRGoals:
         konsol.log(f"[yellow][~] Eski Yayın URL : {eski_yayin_url}")
 
         # API çağrısı kaldırıldı, doğrudan istek yapılıyor
-        response = self.httpx.get(kontrol_url, follow_redirects=True, verify=False)
+        response = self.httpx.get(kontrol_url, follow_redirects=True)
 
         if not (yayin_ara := re.search(r'var baseurl = "(https?:\/\/[^"]+)"', response.text)):
             secici = Selector(response.text)
