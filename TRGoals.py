@@ -108,12 +108,9 @@ class TRGoals:
         if not (yayin_ara := re.search(r'var baseurl = "(https?:\/\/[^"]+)"', response.text)):
             secici = Selector(response.text)
             baslik = secici.xpath("//title/text()").get()
-            if baslik == "404 Not Found":
-                yeni_domain = eldeki_domain
-                yayin_ara   = [None, eski_yayin_url]
-            else:
-                konsol.print(response.text)
-                raise ValueError("Base URL bulunamadı!")
+            konsol.print(response.text)
+            konsol.log("[yellow][!] Base URL bulunamadı ama fallback olarak eski URL kullanılacak.")
+            yayin_ara = [None, eski_yayin_url]
 
         yayin_url = yayin_ara[1]
         konsol.log(f"[green][+] Yeni Yayın URL : {yayin_url}")
