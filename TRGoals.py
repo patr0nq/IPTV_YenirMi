@@ -105,7 +105,7 @@ class TRGoals:
         # API çağrısı kaldırıldı, doğrudan istek yapılıyor
         response = self.httpx.get(kontrol_url, follow_redirects=True)
 
-        if not (yayin_ara := re.search(r'var baseurl = "(https?:\/\/[^"]+)"', response.text)):
+        if not (yayin_ara := re.search(r'(?:var|let|const)\s+baseurl\s*=\s*"(https?://[^"]+)"', response.text)):
             secici = Selector(response.text)
             baslik = secici.xpath("//title/text()").get()
             if baslik == "404 Not Found":
