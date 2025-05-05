@@ -47,7 +47,7 @@ https://tv.ensonhaber.com/haberglobal/haberglobal.m3u8
 https://turkmedya-live.ercdn.net/tv24/tv24_720p.m3u8
 
 #EXTINF:-1 tvg-name="TV 100" tvg-language="Turkish" tvg-country="TR" tvg-id="Haber_TV100" tvg-logo="https://blutv-images.mncdn.com/q/t/i/bluv2/100/750x750/60420fa5866ac32430025edd" group-title="Haber",TV 100
-https://tv100.blutv.com/blutv_tv100_live/live.m3u8
+https://tv100.daioncdn.net/tv100/tv100_360p.m3u8?&sid=7dreoorna9a5&app=356e7599-d81d-4357-935a-355a1ad9846e&ce=2
 
 # #EXTINF:-1 tvg-name="Tele 1" tvg-language="Turkish" tvg-country="TR" tvg-id="Haber_Tele1" tvg-logo="https://blutv-images.mncdn.com/q/t/i/bluv2/100/750x750/60e54dfe866ac30fa0be7528" group-title="Haber",Tele 1
 # http://5.144.1.235:29981/stream/channelid/1632371892?profile=pass
