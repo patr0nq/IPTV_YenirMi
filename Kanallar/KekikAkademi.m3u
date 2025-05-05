@@ -49,14 +49,10 @@ https://turkmedya-live.ercdn.net/tv24/tv24_720p.m3u8
 #EXTINF:-1 tvg-name="TV 100" tvg-language="Turkish" tvg-country="TR" tvg-id="Haber_TV100" tvg-logo="https://blutv-images.mncdn.com/q/t/i/bluv2/100/750x750/60420fa5866ac32430025edd" group-title="Haber",TV 100
 https://tv100.daioncdn.net/tv100/tv100_360p.m3u8?&sid=7dreoorna9a5&app=356e7599-d81d-4357-935a-355a1ad9846e&ce=2
 
-# #EXTINF:-1 tvg-name="Tele 1" tvg-language="Turkish" tvg-country="TR" tvg-id="Haber_Tele1" tvg-logo="https://blutv-images.mncdn.com/q/t/i/bluv2/100/750x750/60e54dfe866ac30fa0be7528" group-title="Haber",Tele 1
-# http://5.144.1.235:29981/stream/channelid/1632371892?profile=pass
 
 #EXTINF:-1 tvg-name="TGRT Haber" tvg-language="Turkish" tvg-country="TR" tvg-id="Haber_TGRT" tvg-logo="https://blutv-images.mncdn.com/q/t/i/bluv2/100/750x750/5c63c466866ac30cbc2ad84f" group-title="Haber",TGRT Haber
 https://tgrthaber-live.daioncdn.net/tgrthaber/tgrthaber_720p.m3u8
 
-#EXTINF:-1 tvg-name="KRT TV" tvg-language="Turkish" tvg-country="TR" tvg-id="Haber_KRTTV" tvg-logo="https://blutv-images.mncdn.com/q/t/i/bluv2/100/750x750/61951f4c866ac31a807822e8" group-title="Haber",KRT TV
-https://krt.blutv.com/blutv_krt_live/live.m3u8
 
 #EXTINF:-1 tvg-name="Sözcü TV" tvg-language="Turkish" tvg-country="TR" tvg-id="Haber_SozcuTV" tvg-logo="https://www.evrensel.net/upload/dosya/231375.jpg" group-title="Haber",Sözcü TV
 https://13.60.64.58/stream/yt/sozcu.m3u8
@@ -200,12 +196,6 @@ https://live.sportstv.com.tr/hls/low/sportstv.m3u8
 https://canlitvulusal3.xyz/live/beinsportshaber/index.m3u8
 # ? https://ythls.kekikakademi.org/youtube/channel/UCPe9vNjHF1kEExT5kHwc7aw.m3u8
 # ? http://stream.tvcdn.net/spor/bein-sports-haber.m3u8
-
-#EXTINF:-1 tvg-name="TJK TV" tvg-language="Turkish" tvg-country="TR" tvg-id="Spor_TJKTV" tvg-logo="http://assets.tvcdn.net/bcbd8593-677e-438a-9077-abe1cce5ffc2.png" group-title="Spor",TJK TV
-https://tjktv-live.tjk.org/tjktv/tjktv.m3u8
-
-#EXTINF:-1 tvg-name="TJK TV 2" tvg-language="Turkish" tvg-country="TR" tvg-id="Spor_TJKTV_2" tvg-logo="http://assets.tvcdn.net/bcbd8593-677e-438a-9077-abe1cce5ffc2.png" group-title="Spor",TJK TV 2
-https://tjktv-live.tjk.org/tjktv2/tjktv2.m3u8
 
 #EXTINF:-1 tvg-name="NBA TV" tvg-language="English" tvg-country="USA" tvg-id="Spor_NBATV" tvg-logo="https://upload.wikimedia.org/wikipedia/tr/8/89/Nbatv.png" group-title="Spor",NBA TV
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5)
