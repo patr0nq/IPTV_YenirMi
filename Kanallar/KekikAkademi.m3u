@@ -203,6 +203,11 @@ https://alpha.cf-worker-ab09587f1265b5.workers.dev/live/selcukbeinsports4/playli
 #EXTVLCOPT:http-referrer=https://main.uxsyplayer1a09531928c5.click/
 https://alpha.cf-worker-ab09587f1265b5.workers.dev/live/selcukbeinsports5/playlist.m3u8
 
+#EXTINF:-1 tvg-name="beIN SPORTS Max" tvg-language="Turkish" tvg-country="TR" tvg-id="Spor_beINSPORTSMax" tvg-logo="https://upload.wikimedia.org/wikipedia/commons/6/6f/BeIN_Sports_MAX.png" group-title="Spor",beIN SPORTS Max
+#EXTVLCOPT:http-user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5)
+#EXTVLCOPT:http-referrer=https://main.uxsyplayer1a09531928c5.click/
+https://alpha.cf-worker-ab09587f1265b5.workers.dev/live/selcukbeinsportsmax1/playlist.m3u8
+
 
 
 # * » Spor « * #
