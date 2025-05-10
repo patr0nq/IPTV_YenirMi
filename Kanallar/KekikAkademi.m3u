@@ -418,4 +418,4 @@ https://service-stitcher.clusters.pluto.tv/v1/stitch/embed/hls/channel/5d93b635b
 
 #EXTINF:-1 tvg-name="Mezzo.fr" tvg-language="French" tvg-country="France" tvg-id="Muzik_Mezzo.fr" tvg-logo="https://d1yjjnpx0p53s8.cloudfront.net/styles/logo-thumbnail/s3/112010/mezzo_tv.png" group-title="Müzik",Mezzo.fr(480p) [Not 24/7]
 #EXTVLCOPT:http-user-agent=Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_5)
-http://ott-cdn.ucom.am/s35/index.m3u8
+http://ott-cdn.ucom.am/s54/index.m3u8
