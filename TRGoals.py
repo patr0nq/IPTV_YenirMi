@@ -87,24 +87,34 @@ class TRGoals:
     def m3u_guncelle(self):
         eldeki_domain = self.referer_domainini_al()
         konsol.log(f"[yellow][~] Bilinen Domain : {eldeki_domain}")
-
+    
         yeni_domain = self.yeni_domaini_al(eldeki_domain)
         konsol.log(f"[green][+] Yeni Domain    : {yeni_domain}")
-
+    
         kontrol_url = f"{yeni_domain}/channel.html?id=yayin1"
-
+    
         with open(self.m3u_dosyasi, "r") as dosya:
             m3u_icerik = dosya.read()
-
-        if not (eski_yayin_url := re.search(r'https?:\/\/[^\/]+\.(workers\.dev|shop|click)\/?', m3u_icerik)):
-            raise ValueError("M3U dosyasında eski yayın URL'si bulunamadı!")
-
+    
+        # Sadece "# * » Spor « * #" başlığı altındaki kısmı bul
+        desen = r"(# \* » Spor « \* #\s*)(.*?)(\n# \*|$)"  # Bir sonraki başlığa kadar al
+        eslesme = re.search(desen, m3u_icerik, re.DOTALL)
+    
+        if not eslesme:
+            raise ValueError("Spor başlığı bulunamadı!")
+    
+        spor_baslik = eslesme[1]
+        spor_icerik = eslesme[2]
+        sonraki_baslik = eslesme[3]
+    
+        if not (eski_yayin_url := re.search(r'https?:\/\/[^\/]+\.(workers\.dev|shop|click)\/?', spor_icerik)):
+            raise ValueError("Spor bölümünde eski yayın URL'si bulunamadı!")
+    
         eski_yayin_url = eski_yayin_url[0]
         konsol.log(f"[yellow][~] Eski Yayın URL : {eski_yayin_url}")
-
-        # API çağrısı kaldırıldı, doğrudan istek yapılıyor
+    
         response = self.httpx.get(kontrol_url, follow_redirects=True)
-
+    
         if not (yayin_ara := re.search(r'(?:var|let|const)\s+baseurl\s*=\s*"(https?://[^"]+)"', response.text)):
             secici = Selector(response.text)
             baslik = secici.xpath("//title/text()").get()
@@ -114,13 +124,22 @@ class TRGoals:
             else:
                 konsol.print(response.text)
                 raise ValueError("Base URL bulunamadı!")
-
+    
         yayin_url = yayin_ara[1]
         konsol.log(f"[green][+] Yeni Yayın URL : {yayin_url}")
-
-        yeni_m3u_icerik = m3u_icerik.replace(eski_yayin_url, yayin_url)
-        yeni_m3u_icerik = yeni_m3u_icerik.replace(eldeki_domain, yeni_domain)
-
+    
+        # Spor içeriğini güncelle
+        yeni_spor_icerik = spor_icerik.replace(eski_yayin_url, yayin_url)
+        yeni_spor_icerik = yeni_spor_icerik.replace(eldeki_domain, yeni_domain)
+    
+        # Yeni M3U içeriğini oluştur
+        yeni_m3u_icerik = re.sub(
+            desen,
+            f"{spor_baslik}{yeni_spor_icerik}{sonraki_baslik}",
+            m3u_icerik,
+            flags=re.DOTALL
+        )
+    
         with open(self.m3u_dosyasi, "w") as dosya:
             dosya.write(yeni_m3u_icerik)
 
