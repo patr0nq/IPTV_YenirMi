@@ -107,7 +107,7 @@ class TRGoals:
         spor_icerik = eslesme[2]
         sonraki_baslik = eslesme[3]
     
-        if not (eski_yayin_url := re.search(r'https?:\/\/[^\/]+\.(workers\.dev|shop|click)\/?', spor_icerik)):
+        if not (eski_yayin_url := re.search(r'https?:\/\/[^\/]+\.(workers\.dev|shop|click|lat)\/?', spor_icerik)):
             raise ValueError("Spor bölümünde eski yayın URL'si bulunamadı!")
     
         eski_yayin_url = eski_yayin_url[0]
