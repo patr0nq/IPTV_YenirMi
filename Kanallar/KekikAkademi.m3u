@@ -55,7 +55,7 @@ https://tgrthaber-live.daioncdn.net/tgrthaber/tgrthaber_720p.m3u8
 
 
 #EXTINF:-1 tvg-name="Sözcü TV" tvg-language="Turkish" tvg-country="TR" tvg-id="Haber_SozcuTV" tvg-logo="https://www.evrensel.net/upload/dosya/231375.jpg" group-title="Haber",Sözcü TV
-https://koprulu2.global.ssl.fastly.net/yt.m3u8/?id=ztmY_cCtUl0
+https://koprulu2.global.ssl.fastly.net/app7/ctv.m3u8/?url=https://tv.canlitv.vip/sozcu-tv-canli
 
 #EXTINF:-1 tvg-name="Halk TV" tvg-language="Turkish" tvg-country="TR" tvg-id="Haber_HalkTV" tvg-logo="https://blutv-images.mncdn.com/q/t/i/bluv2/100/750x750/5dc2bfbd866ac31da06187c5" group-title="Haber",Halk TV
 https://halktv-live.daioncdn.net/halktv/halktv_720p.m3u8
